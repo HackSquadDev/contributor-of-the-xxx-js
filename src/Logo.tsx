@@ -9,9 +9,9 @@ export const Logo: React.FC = () => {
         fps,
         frame,
         config: {
-            damping: 200,
+            damping: 200
         },
-        durationInFrames: 30,
+        durationInFrames: 30
     });
 
     const entranceOffset = interpolate(entrance, [0, 1], [height, 0]);

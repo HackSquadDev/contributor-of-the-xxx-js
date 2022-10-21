@@ -6,7 +6,7 @@ export const Title: React.FC = () => {
     const frame = useCurrentFrame();
     const opacity = interpolate(frame, [20, 40], [0, 1], {
         extrapolateLeft: 'clamp',
-        extrapolateRight: 'clamp',
+        extrapolateRight: 'clamp'
     });
     return (
         <div

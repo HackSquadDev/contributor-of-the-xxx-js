@@ -5,7 +5,7 @@ export const Subtitle: React.FC = () => {
     const frame = useCurrentFrame();
     const opacity = interpolate(frame, [30, 50], [0, 1], {
         extrapolateLeft: 'clamp',
-        extrapolateRight: 'clamp',
+        extrapolateRight: 'clamp'
     });
 
     return (
