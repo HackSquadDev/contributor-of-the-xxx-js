@@ -9,10 +9,10 @@
     "start": "remotion preview src/index.tsx",
     "build": "remotion render src/index.tsx MyComp out/video.mp4",
     "upgrade": "remotion upgrade",
+    "format": "prettier --write src/**/*.{js,ts,jsx,tsx}",
     "test": "eslint src --ext ts,tsx,js,jsx && tsc"
   },
-  "repository": {},
-  "license": "UNLICENSED",
+  "license": "MIT",
   "devDependencies": {
     "autoprefixer": "10.4.4",
     "css-loader": "^6.7.1",
@@ -34,5 +34,6 @@
     "react-dom": "^18.0.0",
     "remotion": "3.2.34",
     "typescript": "4.6.3"
-  }
+  },
+  "author": "HackSquadDev"
 }
