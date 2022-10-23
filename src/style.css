@@ -1,3 +1,57 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes float1 {
+    0% {
+        transform: translate(0, 0)
+    }
+
+    50% {
+        transform: translate(-30px, 0)
+    }
+
+    100% {
+        transform: translate(0, 0)
+    }
+}
+
+.triangle-float1 {
+    animation: float1 8s infinite;
+}
+
+@keyframes float2 {
+    0% {
+        transform: translate(0, 0)
+    }
+
+    50% {
+        transform: translate(-15px, -15px)
+    }
+
+    100% {
+        transform: translate(0, 0)
+    }
+}
+
+.triangle-float2 {
+    animation: float2 6s infinite;
+}
+
+@keyframes float3 {
+    0% {
+        transform: translate(0, 0)
+    }
+
+    50% {
+        transform: translate(0, -20px)
+    }
+
+    100% {
+        transform: translate(0, 0)
+    }
+}
+
+.triangle-float3 {
+    animation: float3 10s infinite;
+}

@@ -1,16 +1,21 @@
-import { AbsoluteFill } from 'remotion';
-import { Logo } from './Logo';
-import { Subtitle } from './Subtitle';
-import { Title } from './Title';
+import { AbsoluteFill, useVideoConfig } from 'remotion';
+import { Avatar } from './Avatar';
+import { Background } from './Background';
+import { Username } from './Username';
 
 export const MyComposition = () => {
+    const config = useVideoConfig();
+
     return (
-        <AbsoluteFill className="bg-gray-100 items-center justify-center">
-            <div className="m-10" />
-            <Logo />
-            <div className="m-3" />
-            <Title />
-            <Subtitle />
-        </AbsoluteFill>
+        <>
+            <Background
+                width={`${config.width}px`}
+                height={`${config.height}px`}
+            />
+            <AbsoluteFill className="bg-transparent justify-center items-center">
+                <Avatar src="https://avatars.githubusercontent.com/u/46562212?v=4" />
+                <Username name="Archaeopteryx1" />
+            </AbsoluteFill>
+        </>
     );
 };
