@@ -67,3 +67,8 @@ export interface IContributorStats {
     };
     total: number;
 }
+
+export interface IPRConfig extends IGetOrgProps {
+    org?: string;
+    author: string;
+}

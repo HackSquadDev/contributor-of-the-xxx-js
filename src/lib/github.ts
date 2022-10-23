@@ -2,7 +2,8 @@ import { Octokit } from '@octokit/rest';
 import {
     IOrganizationResponse,
     IGetOrgProps,
-    IContributorStats
+    IContributorStats,
+    IPRConfig
 } from './typings';
 import {
     waitFor,
@@ -15,22 +16,20 @@ const rest = new Octokit({
 });
 
 export class GitHubAPI extends null {
-    private constructor() {}
+    private constructor() { }
 
     public static getOrganization(config?: IGetOrgProps) {
         return rest.graphql<{
             organization: IOrganizationResponse;
         }>(`{
-            organization(login: "${
-                config?.organization ?? process.env.ORGANIZATION
+            organization(login: "${config?.organization ?? process.env.ORGANIZATION
             }") {
                 id
                 name
                 url
                 avatarUrl
-                repositories(first: 100, ${
-                    config?.endCursor ? `after: "${config.endCursor}", ` : ''
-                }privacy: PUBLIC, isFork: false) {
+                repositories(first: 100, ${config?.endCursor ? `after: "${config.endCursor}", ` : ''
+            }privacy: PUBLIC, isFork: false) {
                     totalCount
                     pageInfo {
                         startCursor
@@ -101,5 +100,20 @@ export class GitHubAPI extends null {
             },
             total: m.total
         })) as IContributorStats[];
+    }
+
+    public static async getPullRequestsFor(config: IPRConfig) {
+        config.org ??= process.env.ORGANIZATION;
+        const res = await rest.graphql<{
+            search: {
+                issueCount: number;
+            }
+        }>(`{
+            search(type:ISSUE, first: 10, query:"is:pr is:merged author:${config.author} org:${config.org}") {
+                issueCount
+            }
+        }`);
+
+        return res.search.issueCount;
     }
 }
