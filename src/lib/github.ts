@@ -3,7 +3,8 @@ import {
     IOrganizationResponse,
     IGetOrgProps,
     IContributorStats,
-    IPRConfig
+    IPRConfig,
+    IContributionStats
 } from './typings';
 import {
     waitFor,
@@ -16,20 +17,23 @@ const rest = new Octokit({
 });
 
 export class GitHubAPI extends null {
-    private constructor() { }
+    private constructor() {}
 
     public static getOrganization(config?: IGetOrgProps) {
         return rest.graphql<{
             organization: IOrganizationResponse;
         }>(`{
-            organization(login: "${config?.organization ?? process.env.ORGANIZATION
+            organization(login: "${
+                config?.organization ?? process.env.ORGANIZATION
             }") {
                 id
                 name
+                login
                 url
                 avatarUrl
-                repositories(first: 100, ${config?.endCursor ? `after: "${config.endCursor}", ` : ''
-            }privacy: PUBLIC, isFork: false) {
+                repositories(first: 100, ${
+                    config?.endCursor ? `after: "${config.endCursor}", ` : ''
+                }privacy: PUBLIC, isFork: false) {
                     totalCount
                     pageInfo {
                         startCursor
@@ -107,7 +111,7 @@ export class GitHubAPI extends null {
         const res = await rest.graphql<{
             search: {
                 issueCount: number;
-            }
+            };
         }>(`{
             search(type:ISSUE, first: 10, query:"is:pr is:merged author:${config.author} org:${config.org}") {
                 issueCount
@@ -115,5 +119,52 @@ export class GitHubAPI extends null {
         }`);
 
         return res.search.issueCount;
+    }
+
+    // TODO: improve this
+    public static async getContributionStats(
+        organization = process.env.ORGANIZATION!
+    ) {
+        const org = await this.getRepositories(organization);
+        const contributors = (
+            await Promise.all(
+                org.repositories.nodes.map((m) => {
+                    return this.getContributorsFor(organization, m.name);
+                })
+            )
+        ).flat();
+
+        const stats: IContributionStats = {
+            organization: org,
+            contributions: {},
+            pullRequests: {}
+        };
+
+        for (const m of contributors) {
+            if (m.author.login in stats.contributions) {
+                stats.contributions[m.author.login].count += m.total;
+            } else {
+                stats.contributions[m.author.login] = {
+                    count: m.total,
+                    user: m.author
+                };
+            }
+
+            const prs = await this.getPullRequestsFor({
+                author: m.author.login,
+                org: org.login
+            });
+
+            if (m.author.login in stats.pullRequests) {
+                stats.pullRequests[m.author.login].count += prs;
+            } else {
+                stats.pullRequests[m.author.login] = {
+                    count: m.total,
+                    user: m.author
+                };
+            }
+        }
+
+        return stats;
     }
 }

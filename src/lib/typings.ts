@@ -1,6 +1,7 @@
 export interface IOrganizationResponse {
     id: string;
     name: string;
+    login: string;
     url: string;
     avatarUrl: string;
     repositories: {
@@ -58,17 +59,38 @@ export interface IGetOrgProps {
 }
 
 export interface IContributorStats {
-    author: {
-        login: string;
-        id: number;
-        html_url: string;
-        avatar_url: string;
+    author: IUser & {
         type: 'User' | 'Bot';
     };
     total: number;
 }
 
-export interface IPRConfig extends IGetOrgProps {
+export interface IUser {
+    login: string;
+    id: number;
+    html_url: string;
+    avatar_url: string;
+}
+
+export interface IPRConfig {
     org?: string;
     author: string;
+}
+
+export interface IContributionStats {
+    organization: IOrganizationResponse;
+    contributions: Record<
+        string,
+        {
+            user: IUser;
+            count: number;
+        }
+    >;
+    pullRequests: Record<
+        string,
+        {
+            user: IUser;
+            count: number;
+        }
+    >;
 }
